@@ -24,5 +24,3 @@ if ($msg != null) {
 } else {
     echo "Failed to receive a message\n";
 }
-
-$stomp->unsubscribe();
