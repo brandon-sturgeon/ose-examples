@@ -7,7 +7,7 @@ use Stomp\Transport\Message;
 
 // make a connection
 $stomp = new StatefulStomp(
-    new Client('failover://(tcp://amq:61613,tcp://amq:61616)?randomize=false')
+    new Client('failover://(tcp://amq:61613,tcp://amq:61613)?randomize=false')
 );
 
 // send a message to the queue
