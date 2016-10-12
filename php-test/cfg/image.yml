@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+  name: php-test
+spec: {  }
+status:
+  dockerImageRepository: '172.30.2.149:5000/sample-project/php-test'
