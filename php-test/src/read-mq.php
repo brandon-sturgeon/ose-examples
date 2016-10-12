@@ -2,13 +2,14 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Stomp\Client;
+use Stomp\Network\Connection;
 use Stomp\StatefulStomp;
 use Stomp\Transport\Message;
 
 // make a connection
-$stomp = new StatefulStomp(
-    new Client('failover://(tcp://amq:61613,tcp://amq:61613)?randomize=false')
-);
+$connection = new Connection('failover://(tcp://amq:61613,tcp://amq:61613)?randomize=false');
+$connection->setReadTimeout(1);
+$stomp = new StatefulStomp(new Client($connection));
 
 // subscribe to the queue
 $stomp->subscribe('/queue/test', null, 'client-individual');
