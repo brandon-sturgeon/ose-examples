@@ -1,19 +1,15 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 
-$queue  = '/queue/foo';
-$msg    = 'bar';
+use Stomp\Client;
+use Stomp\StatefulStomp;
+use Stomp\Transport\Message;
 
-/* connection */
-try {
-    $stomp = new Stomp('tcp://localhost:61613');
-} catch(StompException $e) {
-    die('Connection failed: ' . $e->getMessage());
-}
+// make a connection
+$stomp = new StatefulStomp(
+    new Client('failover://(tcp://localhost:61614,ssl://localhost:61612,tcp://localhost:61613)?randomize=false')
+);
 
-/* send a message to the queue 'foo' */
-$stomp->send($queue, $msg);
-
-/* close connection */
-unset($stomp);
-
-?>
+// send a message to the queue
+$stomp->send('/queue/test', new Message('test'));
+echo "Sent message with body 'test'\n";

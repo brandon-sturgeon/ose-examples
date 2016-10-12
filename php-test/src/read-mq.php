@@ -1,28 +1,28 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 
-$queue  = '/queue/foo';
+use Stomp\Client;
+use Stomp\StatefulStomp;
+use Stomp\Transport\Message;
 
-/* connection */
-try {
-    $stomp = new Stomp('tcp://localhost:61613');
-} catch(StompException $e) {
-    die('Connection failed: ' . $e->getMessage());
+// make a connection
+$stomp = new StatefulStomp(
+    new Client('failover://(tcp://localhost:61614,ssl://localhost:61612,tcp://localhost:61613)?randomize=false')
+);
+
+// subscribe to the queue
+$stomp->subscribe('/queue/test', null, 'client-individual');
+
+// receive a message from the queue
+$msg = $stomp->read();
+
+// do what you want with the message
+if ($msg != null) {
+    echo "Received message with body '$msg->body'\n";
+    // mark the message as received in the queue
+    $stomp->ack($msg);
+} else {
+    echo "Failed to receive a message\n";
 }
 
-/* subscribe to messages from the queue 'foo' */
-$stomp->subscribe($queue);
-
-/* read a frame */
-$frame = $stomp->readFrame();
-
-if ($frame->body === $msg) {
-    var_dump($frame);
-
-    /* acknowledge that the frame was received */
-    $stomp->ack($frame);
-}
-
-/* close connection */
-unset($stomp);
-
-?>
+$stomp->unsubscribe();
