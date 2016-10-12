@@ -15,3 +15,5 @@ $message = uniqid();
 // send a message to the queue
 $stomp->send('/queue/test', new Message($message));
 echo "Sent message with body $message\n";
+
+$stomp->unsubscribe();
