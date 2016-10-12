@@ -1,1 +1,1 @@
-# ose-examples
+# OpenShift Examples
